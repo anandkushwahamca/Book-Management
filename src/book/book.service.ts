@@ -81,4 +81,17 @@ export class BookService {
       throw new NotFoundException(MESSAGES.BOOK_NOT_FOUND);
     }
   }
+
+  async searchBooksByTitle(title: string): Promise<BookDTO[]> {
+    const bookInfo = await this.bookRepository
+      .createQueryBuilder('book')
+      .where('book.title ilike :name', { name: `%${title}%` })
+      .getMany();
+    if (bookInfo?.length) {
+      return bookInfo;
+    } else {
+      this.logger.warn(MESSAGES.BOOK_NOT_FOUND);
+      throw new NotFoundException(MESSAGES.BOOK_NOT_FOUND);
+    }
+  }
 }

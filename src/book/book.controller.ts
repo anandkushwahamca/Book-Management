@@ -50,4 +50,9 @@ export class BookController {
   ): Promise<BookDTO | object> {
     return await this.bookService.deleteBook(id);
   }
+
+  @Get('bookTitle/:title')
+  async searchBooksByTitle(@Param('title') title: string): Promise<BookDTO[]> {
+    return await this.bookService.searchBooksByTitle(title);
+  }
 }
