@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MESSAGES } from '../common/constans/constans';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Book } from './book.entity';
 import { BookDTO } from './dto/book.dto';
 
@@ -83,10 +83,13 @@ export class BookService {
   }
 
   async searchBooksByTitle(title: string): Promise<BookDTO[]> {
-    const bookInfo = await this.bookRepository
-      .createQueryBuilder('book')
-      .where('book.title ilike :name', { name: `%${title}%` })
-      .getMany();
+    const bookInfo = await this.bookRepository.find({
+      where: [
+        {
+          title: ILike(`%${title}%`),
+        },
+      ],
+    });
     if (bookInfo?.length) {
       return bookInfo;
     } else {

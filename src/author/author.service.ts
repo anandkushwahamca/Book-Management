@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MESSAGES } from '../common/constans/constans';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Author } from './author.entity';
 import { AuthorDTO } from './dto/author.dto';
 import { Book } from '../book/book.entity';
@@ -97,14 +97,32 @@ export class AuthorService {
   }
 
   async sortingAuthor(): Promise<AuthorDTO[]> {
-    const authorInfo = this.authorRepository.find({
-      // where: { id, createdOn },
+    const authorInfo = await this.authorRepository.find({
       order: {
         createdOn: 'DESC',
         id: 'DESC',
       },
     });
-    if (authorInfo) {
+    if (authorInfo?.length) {
+      return authorInfo;
+    } else {
+      this.logger.warn(MESSAGES.AUTHOR_NOT_FOUND);
+      throw new NotFoundException(MESSAGES.AUTHOR_NOT_FOUND);
+    }
+  }
+
+  async searchAuthorByName(name: string): Promise<AuthorDTO[]> {
+    const authorInfo = await this.authorRepository.find({
+      where: [
+        {
+          firstName: ILike(`%${name}%`),
+        },
+        {
+          lastName: ILike(`%${name}%`),
+        },
+      ],
+    });
+    if (authorInfo?.length) {
       return authorInfo;
     } else {
       this.logger.warn(MESSAGES.AUTHOR_NOT_FOUND);

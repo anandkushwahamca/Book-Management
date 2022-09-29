@@ -48,4 +48,9 @@ export class AuthorController {
   async sortingAuthor(): Promise<AuthorDTO[]> {
     return await this.authorService.sortingAuthor();
   }
+
+  @Get('authorName/:name')
+  async searchAuthorByName(@Param('name') name: string): Promise<AuthorDTO[]> {
+    return await this.authorService.searchAuthorByName(name);
+  }
 }
