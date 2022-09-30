@@ -24,11 +24,11 @@ export class BookService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async getAllBook(): Promise<BookDTO[]> {
-    const book = await this.bookRepository.find();
+  async getAllBook(): Promise<BookDTO[] | object> {
+    const [book, count] = await this.bookRepository.findAndCount();
     if (book?.length) {
       await this.cacheManager.set('bookList', book);
-      return book;
+      return { count, book };
     } else {
       this.logger.warn(MESSAGES.BOOK_NOT_FOUND);
       throw new NotFoundException(MESSAGES.BOOK_NOT_FOUND);

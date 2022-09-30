@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { ROLES_KEY } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enum/role.enum';
 
+/**
+ * Create role guard for admin or guest user
+ */
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}

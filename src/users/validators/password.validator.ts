@@ -1,6 +1,11 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import * as zxcvbn from 'zxcvbn';
 
+/**
+ * Password validation
+ * @param validationOptions password
+ * @returns object
+ */
 export function IsPasswordValid(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({

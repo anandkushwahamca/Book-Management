@@ -4,6 +4,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from '../users/repository/users.repository';
 import { JwtPayload } from '../common/payload/jwt-payload';
 
+/**
+ * Create user jwtStrategy
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly userRepository: UserRepository) {
@@ -14,6 +17,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  /**
+   * User validate
+   * @param payload email
+   * @returns User details
+   */
   async validate(payload: JwtPayload) {
     try {
       const { email } = payload;
