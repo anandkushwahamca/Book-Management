@@ -1,11 +1,14 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
   ConflictException,
+  Inject,
   Injectable,
   Logger,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MESSAGES } from '../common/constans/constans';
 import { ILike, Repository } from 'typeorm';
@@ -18,11 +21,13 @@ export class BookService {
   constructor(
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async getAllBook(): Promise<BookDTO[]> {
     const book = await this.bookRepository.find();
     if (book?.length) {
+      await this.cacheManager.set('bookList', book);
       return book;
     } else {
       this.logger.warn(MESSAGES.BOOK_NOT_FOUND);
